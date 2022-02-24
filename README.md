@@ -2,7 +2,7 @@
 
 Automatize o deploy dos seus fluxos de push ou pull requests enviados para um determiando repositório do GitHub.
 
-Usando as actions do GitHub podemos criar um [pipeline](http://google.com/) de deploy, automatizando o envio de código para um [VPS](http://tokstok.infosec.dev.br) via SSH.
+Usando as actions do GitHub podemos criar um [pipeline](https://github.com/usrbinbrain/techtalk-actions-deploy/blob/main/.github/workflows/deploy_techtalk.yml) de deploy, automatizando o envio de código para um [VPS](http://tokstok.infosec.dev.br) via SSH.
 
 ## 📜 Pré-requisitos.
 
