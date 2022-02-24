@@ -1,0 +1,85 @@
+# Nome do workflow, esse nome identifica a pipeline.
+name: 'Workflow deploy tech talk'
+
+# Controla quando esse workflow é executado.
+on:
+  # Quando ocorrer um PUSH que modifica o arquivo index.html na branch main.
+  push:
+    paths:
+      - 'index.html'
+    branches:
+      - main
+  # Quando ocorrer um PULL REQUEST que modifica o arquivo index.html na branch main.
+  pull_request:
+    paths:
+      - 'index.html'
+    branches:
+      - main
+
+  # Permite que esse workflow seja executado manualmente via browser.
+  workflow_dispatch:
+
+jobs:
+  # O primeiro job "verify_port" verifica o status da porta SSH do servidor configurado nas secrets do github.
+  verify_port:
+    name: Verificando a porta SSH
+    runs-on: ubuntu-latest
+    steps:
+    
+    # Salva a resposta de um requents TCP simulado com bash na porta do servidor remoto.
+    - name: Testando conectividade com a porta do SSH.
+      run: echo "SSH_PORT=$(sudo timeout 1 /bin/bash -c "echo EOF > /dev/tcp/${{ secrets.HOST }}/${{ secrets.PORT }}" 2>/dev/null && echo $?)" >> "$GITHUB_ENV"
+    
+    # Caso a porta remota não responda, encerre o workflow.
+    - name: Detectando porta fechada/filtrada
+      if: env.SSH_PORT != '0'
+      run: |
+        echo "[+] Remote SSH port is down."
+        exit 1
+        
+  # O segundo job "deploy" carrega as secrets para executar comandos pré e pós realizar o envio do repositório.
+  deploy:
+      needs: verify_port
+      name: 'Iniciando action de deploy'
+      runs-on: ubuntu-latest
+      steps:
+        
+        # Executa comandos no VPS antes que os arquivos sejam enviados.
+        - name: Executando comandos pré envio do repositório
+          uses: appleboy/ssh-action@master
+          with:
+            # Aqui o pipeline carrega todas as secrets cadastradas no repositório.
+            host: ${{ secrets.HOST }}
+            username: ${{secrets.USERNAME }}
+            key: ${{ secrets.KEY }} 
+            port: ${{ secrets.PORT }}
+            # Trecho de comandos para ser executados via SSH.
+            script: |
+              echo "## Comandos pré envio do repositório ##"
+              which apache2 || apt-get update && apt-get install apache2 -y
+              
+        # Executa o envio dos arquivos para o VPS.     
+        - uses: actions/checkout@v2
+        - name: Enviando repositório para o VPS
+          uses: appleboy/scp-action@master
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{secrets.USERNAME }}
+            key: ${{ secrets.KEY }} 
+            port: ${{ secrets.PORT }}
+            source: "*"
+            target: "/var/www/html"
+        
+        # Executa comandos no VPS depois que os arquivos sejam enviados.
+        - name: Executando comandos pós envio do repositório
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{secrets.USERNAME }}
+            key: ${{ secrets.KEY }} 
+            port: ${{ secrets.PORT }}
+            # Trecho de comandos para ser executados via SSH
+            script: |
+              echo "## Comandos pós envio do repositório ##"
+              systemctl restart apache2 && systemctl status apache2
+              
