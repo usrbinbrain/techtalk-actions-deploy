@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  
+<title>Tech Talk</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+body,h1,h5 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+  background-image: url('/img/github-05.png');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+</style>
+</head>
+<body>
+
+<div class="bgimg w3-display-container w3-text-white">
+  <div class="w3-display-middle w3-jumbo">
+    <p class="w3-animate-bottom"><b>TOK&STOK</b></p>
+    <!--
+    <p class="w3-animate-bottom">Tech Talk</p>
+    -->
+  </div>
+  <div class="w3-display-topleft w3-container w3-xlarge">
+    <p><button onclick="document.getElementById('menu').style.display='block'" class="w3-button w3-black">menu</button></p>
+  </div>
+  <div class="w3-display-bottomleft w3-container">
+    <p class="w3-large">Tok&Stok | GitHub | Actions | Deploy </p>
+    <p><a href="https://github.com/" target="_blank">github.com</a></p>
+  </div>
+</div>
+
+<!-- Menu Modal -->
+<div id="menu" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom">
+    <div class="w3-container w3-green w3-display-container">
+      <span onclick="document.getElementById('menu').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
+      <h1><a href="https://github.com/usrbinbrain/techtalk-actions-deploy" target="_blank" style="text-decoration:none">Tok&Stok Tech Talk</a></h1>
+    </div>
+    <div class="w3-container">
+      <h5><a href="https://github.com/usrbinbrain/techtalk-actions-deploy" target="_blank" style="text-decoration:none">Deploy com GitHub Action.</a></h5>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
