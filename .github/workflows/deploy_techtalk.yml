@@ -1,5 +1,5 @@
 # Nome do workflow, esse nome identifica a pipeline.
-name: 'Workflow deploy tech talk'
+name: 'Workflow Seaart farming coins'
 
 # Controla quando esse workflow é executado.
 on:
